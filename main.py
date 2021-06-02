@@ -18,7 +18,6 @@ def main():
 	inputs_train, inputs_test, labels_train, labels_test = splitData(contents, labels)
 
 	""" Preprocessing (not yet implemented) """ 
-	pdb.set_trace()
 	inputs_train = preprocessing.remove_url(inputs_train)
 	inputs_train = preprocessing.remove_mentions(inputs_train)
 	inputs_train = preprocessing.remove_hashtags(inputs_train)
