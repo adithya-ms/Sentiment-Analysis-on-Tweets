@@ -36,7 +36,6 @@ def SVM(inputs_train, labels_train, inputs_test, mode):
     
     # Create a classifier with kernel = mode
     classifier = svm.SVC(kernel=mode)    
-    labels_train = labels_train.astype('int')
     classifier.fit(inputs_train, labels_train)
     
     # Predict the test data
