@@ -10,20 +10,30 @@ import numpy as np
 
 def main():
 	data = load_data()
-	#print(data)
-
 	contents = data["content"]
 	labels = data["sentiment"]
 	
     
-  # Test on a subset (with incomplete preprocessing -> large dictionary -> slow)
-	contents = contents[1:20000]
-	labels = labels[1:20000]
+  	# Test on a subset (with incomplete preprocessing -> large dictionary -> slow)
+	#contents = contents[1:20000]
+	#labels = labels[1:20000]
 	
+
 	""" Preprocessing (not yet complete) """ 
+	preprocessing.count_oov_words(contents)
 	contents = preprocessing.remove_url(contents)
 	contents = preprocessing.remove_mentions(contents)
 	contents = preprocessing.remove_hashtags(contents)
+	contents = preprocessing.remove_HTML(contents)
+	contents = preprocessing.remove_grammar_abbreviations(contents)
+	contents = preprocessing.remove_all_punctuation(contents)
+	contents = preprocessing.remove_duplicate_spaces(contents)
+	#contents = preprocessing.spell_checker(contents)
+	#contents = preprocessing.alt_spell_checker(contents)
+	contents = preprocessing.expand_acronym(contents)
+	preprocessing.count_oov_words(contents)
+	contents = preprocessing.stemmer(contents)
+	contents = preprocessing.remove_stopwords(contents)
 
 	'''
 	pipe = Pipeline([('scaler', StandardScaler()),
