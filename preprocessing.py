@@ -10,7 +10,6 @@ import json
 import string
 from gingerit.gingerit import GingerIt
 
-
 def remove_HTML(data):
     for index in range(len(data)):
         HTML = ["&amp;", " and ", "&quot;", "", "&lt;", "", "&gt;", ""]
@@ -28,6 +27,17 @@ def remove_grammar_abbreviations(data):
                 data.iloc[index] = data.iloc[index].replace(Abr[i], Abr[i+1])
         
     return data 
+
+def change_emoticons(data):
+    emote=pd.read_csv('emoticons_lookup_table.csv', sep = ';')
+    emoticons = emote['emoticon']
+    words = emote['word']
+    for index in range(len(data)):
+        tweet_list = data.iloc[index].split(" ")
+        for word in tweet_list:
+            for i in range(len(emoticons)):
+                data.iloc[index] = data.iloc[index].replace(emoticons[i], words[i])
+    return data
 
 def remove_url(data):
 	for index in range(len(data)):
@@ -168,4 +178,3 @@ def count_oov_words(data):
     print("Unique in vocabulary word count:", str(len(iv)))
     print("Unique out of vocabulary word count:", str(len(oov)))
     
-
