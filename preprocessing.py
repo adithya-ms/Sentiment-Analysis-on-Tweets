@@ -66,7 +66,7 @@ def remove_hashtags(data):
 
 def remove_all_punctuation(data):
     for index in range(len(data)):
-        data.iloc[index] = re.sub(r'[^\w\s]', ' ', data.iloc[index])
+        data.iloc[index] = re.sub(r'[^0-9a-zA-Z\s]', ' ', data.iloc[index])
     return data
 
 def remove_duplicate_spaces(data):
