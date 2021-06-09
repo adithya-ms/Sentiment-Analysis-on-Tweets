@@ -7,38 +7,12 @@ from sklearn.pipeline import Pipeline
 import preprocessing
 import pdb
 import numpy as np
-
+import bert_model
 def main():
-	data = load_data()
+	
+	data = load_data("data/preprocessed_data.csv")
 	contents = data["content"]
 	labels = data["sentiment"]
-	
-    
-  	# Test on a subset (with incomplete preprocessing -> large dictionary -> slow)
-	#contents = contents[1:20000]
-	#labels = labels[1:20000]
-	
-
-	""" Preprocessing (not yet complete) """ 
-	preprocessing.count_oov_words(contents)
-	contents = preprocessing.remove_url(contents)
-	contents = preprocessing.remove_mentions(contents)
-	contents = preprocessing.remove_hashtags(contents)
-	contents = preprocessing.remove_HTML(contents)
-	contents = preprocessing.remove_grammar_abbreviations(contents)
-	contents = preprocessing.remove_all_punctuation(contents)
-	contents = preprocessing.remove_duplicate_spaces(contents)
-	#contents = preprocessing.spell_checker(contents)
-	#contents = preprocessing.alt_spell_checker(contents)
-	contents = preprocessing.expand_acronym(contents)
-	preprocessing.count_oov_words(contents)
-	contents = preprocessing.stemmer(contents)
-	contents = preprocessing.remove_stopwords(contents)
-
-	'''
-	pipe = Pipeline([('scaler', StandardScaler()),
-					 ('svc', SVC())])
-	'''
 
 	""" Train - val - test Split """ # val + test is still to be implemented
 	inputs_train, inputs_test, labels_train, labels_test = splitData(contents, labels)
@@ -69,6 +43,7 @@ def main():
 	print("accuracy KNN", correct_knn / total)
 	print("accuracy SVM", correct_svm / total)
 
+	#bert_model.bert_ops(inputs_train, inputs_test, labels_train, labels_test, batch_size = 32, epochs = 5)
 
 if __name__ == "__main__":
 	main()

@@ -8,7 +8,8 @@ from nltk.stem import PorterStemmer
 import pdb
 import json
 import string
-from gingerit.gingerit import GingerIt
+#from gingerit.gingerit import GingerIt
+from data_loading import load_data
 
 def remove_HTML(data):
     for index in range(len(data)):
@@ -178,3 +179,30 @@ def count_oov_words(data):
     print("Unique in vocabulary word count:", str(len(iv)))
     print("Unique out of vocabulary word count:", str(len(oov)))
     
+
+def preprocess_entire_data(contents):
+    #preprocessing.count_oov_words(contents)
+    contents = remove_url(contents)
+    '''contents = remove_mentions(contents)
+                contents = remove_hashtags(contents)
+                contents = remove_HTML(contents)
+                contents = remove_grammar_abbreviations(contents)
+                contents = change_emoticons(contents)
+                contents = remove_all_punctuation(contents)
+                contents = remove_duplicate_spaces(contents)
+                contents = expand_acronym(contents)
+                contents = spell_checker(contents)'''
+    #contents = preprocessing.alt_spell_checker(contents)
+    #preprocessing.count_oov_words(contents)
+    #contents = preprocessing.stemmer(contents)
+    
+    contents = remove_stopwords(contents)
+
+    return contents
+
+if __name__ == "__main__":
+    data = load_data("data/text_emotion.csv")
+    data = data.drop(columns = ["author", "tweet_id"])
+    data["content"] = preprocess_entire_data(data["content"])
+    data.to_csv("data/preprocessed_data.csv")
+
