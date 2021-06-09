@@ -165,7 +165,7 @@ def count_oov_words(data):
             elif not(str(word) in spell) and not(word in oov):
                 oov.append(word)
 
-    print("iv:", str(iv))
-    print("oov:", str(oov))
+    print("Unique in vocabulary word count:", str(len(iv)))
+    print("Unique out of vocabulary word count:", str(len(oov)))
     
 
