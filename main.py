@@ -11,27 +11,39 @@ import numpy as np
 def main():
 	data = load_data()
 	#print(data)
-
+	pdb.set_trace()
 	contents = data["content"]
 	labels = data["sentiment"]
 	
     
-  # Test on a subset (with incomplete preprocessing -> large dictionary -> slow)
-	contents = contents[1:20000]
-	labels = labels[1:20000]
+  	# Test on a subset (with incomplete preprocessing -> large dictionary -> slow)
+	#contents = contents[1:20000]
+	#labels = labels[1:20000]
 	
+	""" Train - val - test Split """ # val + test is still to be implemented
+	inputs_train, inputs_test, labels_train, labels_test = splitData(contents, labels)
+
 	""" Preprocessing (not yet complete) """ 
-	contents = preprocessing.remove_url(contents)
-	contents = preprocessing.remove_mentions(contents)
-	contents = preprocessing.remove_hashtags(contents)
+	preprocessing.count_oov_words(inputs_train)
+	inputs_train = preprocessing.remove_url(inputs_train)
+	inputs_train = preprocessing.remove_mentions(inputs_train)
+	inputs_train = preprocessing.remove_hashtags(inputs_train)
+	inputs_train = preprocessing.remove_HTML(inputs_train)
+	inputs_train = preprocessing.remove_grammar_abbreviations(inputs_train)
+	inputs_train = preprocessing.remove_all_punctuation(inputs_train)
+	inputs_train = preprocessing.remove_duplicate_spaces(inputs_train)
+	#inputs_train = preprocessing.spell_checker(inputs_train)
+	#inputs_train = preprocessing.alt_spell_checker(inputs_train)
+	inputs_train = preprocessing.expand_acronym(inputs_train)
+	preprocessing.count_oov_words(inputs_train)
+	inputs_train = preprocessing.stemmer(inputs_train)
+	inputs_train = preprocessing.remove_stopwords(inputs_train)
 
 	'''
 	pipe = Pipeline([('scaler', StandardScaler()),
 					 ('svc', SVC())])
 	'''
 
-	""" Train - val - test Split """ # val + test is still to be implemented
-	inputs_train, inputs_test, labels_train, labels_test = splitData(contents, labels)
     
 	""" Vectorization (first version) """ 
 	vectorizer = CountVectorizer(stop_words='english')
