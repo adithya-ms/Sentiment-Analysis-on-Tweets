@@ -2,23 +2,61 @@
 
 from data_loading import load_data
 from baseline_models import splitData, kNN, SVM, print_confusion_matrix n
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, HashingVectorizer
 from sklearn.pipeline import Pipeline
 import preprocessing
 import pdb
 import numpy as np
 import bert_model
+
+from gensim.models import Word2Vec
+
+def word2vecEmbedding(contents)
+    contents_split = []
+    for line in contents:
+        contents_split.append(line.split())
+
+    # Train a word2vec model
+    model_w2v = Word2Vec(sentences=contents_split, vector_size=10, window=5, min_count=1, workers=4)
+    # print(model_w2v.wv.most_similar('man'))
+    
+    max_length = max(map(len, contents_split))
+
+    embeddings_input = []
+    for sentence in contents_split:
+        sentence_embedding = []
+        for word in sentence:
+            sentence_embedding.append(np.array(model_w2v.wv[word]))
+        while(len(sentence_embedding) < max_length):
+            sentence_embedding.append(np.zeros(10))
+        embeddings_input.append(sentence_embedding)
+
+    embeddings_input = np.array(embeddings_input)
+    
+    dim1, dim2, dim3 = embeddings_input.shape
+    embeddings_input = embeddings_input.reshape((dim1, dim2 * dim3))
+    print(embeddings_input.shape)
+    
+    return embeddings_input
+
+
 def main():
 	
 	data = load_data("data/preprocessed_data.csv")
 	contents = data["content"]
 	labels = data["sentiment"]
+    
+	""" Word2Vec embeddings (uncomment this and comment out the vectorizer to use it) """ 
+	#contents = word2vecEmbedding(contents)
 
 	""" Train - val - test Split """ # val + test is still to be implemented
 	inputs_train, inputs_test, labels_train, labels_test = splitData(contents, labels)
     
 	""" Vectorization (first version) """ 
 	vectorizer = CountVectorizer(stop_words='english')
+	#vectorizer = TfidfVectorizer()
+	#vectorizer = HashingVectorizer()
+
 	inputs_train = vectorizer.fit_transform(inputs_train)
 	inputs_test = vectorizer.transform(inputs_test)
     
