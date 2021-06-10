@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from data_loading import load_data
-from baseline_models import splitData, kNN, SVM
+from baseline_models import splitData, kNN, SVM, print_confusion_matrix n
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.pipeline import Pipeline
 import preprocessing
@@ -41,8 +41,12 @@ def main():
 		total += 1
 
 	print("accuracy KNN", correct_knn / total)
+	print("Confusion matrix KNN:")
+	print_confusion_matrix(labels_test, predictionKNN)
 	print("accuracy SVM", correct_svm / total)
-
+	print("Confusion matrix SVM:")
+	print_confusion_matrix(labels_test, predictionSVM)
+    
 	#bert_model.bert_ops(inputs_train, inputs_test, labels_train, labels_test, batch_size = 32, epochs = 5)
 
 if __name__ == "__main__":

@@ -5,6 +5,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn import svm
 
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, plot_confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Functions partly from my ML code
 
@@ -42,3 +45,18 @@ def SVM(inputs_train, labels_train, inputs_test, mode):
     labels_prediction = classifier.predict(inputs_test)
 
     return labels_prediction
+
+
+""" Print a visualized confusion matrix"""
+def print_confusion_matrix(y_true, y_pred):
+
+   class_names = ["neutral", "worry", "happiness", "sadness", "love", "surprise", "fun", "relief", "hate", "empty", "enthusiasm", "boredom", "anger"]
+
+   fig, ax = plt.subplots(figsize=(15,15))
+
+   cf_matrix = confusion_matrix(y_true, y_pred, labels = class_names)
+   sns.set(font_scale=1.4)
+   res = sns.heatmap(cf_matrix, annot=True, xticklabels = class_names, yticklabels = class_names, ax=ax, annot_kws={"size": 25})
+   res.set_xticklabels(res.get_xmajorticklabels(), fontsize = 25, rotation=45)
+   res.set_yticklabels(res.get_ymajorticklabels(), fontsize = 25)
+   plt.title('Confusion matrix heatmap - true (vertical) vs. predicted (horizontal) labels', fontsize = 28)
