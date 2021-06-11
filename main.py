@@ -45,6 +45,49 @@ def main():
 	data = load_data("data/preprocessed_data.csv")
 	contents = data["content"]
 	labels = data["sentiment"]
+	labels_merged = []
+
+	neutral = []
+	pos = []
+	neg = []
+	for label in labels:
+		if label == "anger":
+			labels_merged.append("neg")
+		elif label == "boredom":
+			labels_merged.append("neg")
+		elif label == "hate":
+			labels_merged.append("neg")
+		elif label == "sadness":
+			labels_merged.append("neg")
+		elif label == "worry":
+			labels_merged.append("neg")
+		elif label == "empty":
+			labels_merged.append("neutral")
+		elif label == "enthusiasm":
+			labels_merged.append("pos")
+		elif label == "fun":
+			labels_merged.append("pos")
+		elif label == "happiness":
+			labels_merged.append("pos")
+		elif label == "love":
+			labels_merged.append("pos")
+		elif label == "relief":
+			labels_merged.append("pos")
+		elif label == "surprise":
+			labels_merged.append("neutral")
+		else:
+			labels_merged.append("neutral")
+	for label in labels_merged:
+		if label == "neutral":
+			neutral.append(label)
+		elif label == "pos":
+			pos.append(label)
+		elif label == "neg":
+			neg.append(label)
+	print("label dist:")
+	print("pos= ", len(pos))
+	print("neg= ", len(neg))
+	print("neutral= ", len(neutral))
     
 	""" Word2Vec embeddings (uncomment this and comment out the vectorizer to use it) """ 
 	#contents = word2vecEmbedding(contents)

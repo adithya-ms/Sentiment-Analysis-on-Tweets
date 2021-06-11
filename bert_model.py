@@ -10,6 +10,10 @@ from baseline_models import splitData
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from transformers import BertForSequenceClassification, BertTokenizer
+import preprocessing
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print(device)
 
 parser = argparse.ArgumentParser(description="Sentiment analysis")
 parser.add_argument("--reload_model", type=str, help="Path of model to reload")
@@ -50,7 +54,7 @@ class Dataset(Dataset):
         self.labels = torch.Tensor(labels)
 
     def __getitem__(self, index):
-        return self.input_ids[index].long(),self.attention_masks[index].long(), self.labels[index].long()
+        return self.input_ids[index].long().to(device),self.attention_masks[index].long().to(device), self.labels[index].long().to(device)
 
     def __len__(self):
         return len(self.input_ids)
@@ -113,7 +117,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args.save_model = "model.pt"
     
-    pretrained = 'bert-base-uncased'
+    pretrained = 'bert-base-cased'
     tokenizer = BertTokenizer.from_pretrained(pretrained)
     tokenizer.do_basic_tokenize = True
 
@@ -122,7 +126,50 @@ if __name__ == "__main__":
     df = pd.read_csv('data/text_emotion.csv')
     df.head()
     data = df["content"]
-    labels = df["sentiment"]
+    labels_raw = df["sentiment"]
+    labels = []
+    pos = []
+    neg = []
+    neutral = []
+    for label in labels_raw:
+        if label == "anger":
+           labels.append("neg")
+        elif label == "boredom":
+            labels.append("neg")
+        elif label == "hate":
+            labels.append("neg")
+        elif label == "sadness":
+            labels.append("neg")
+        elif label == "worry":
+            labels.append("neg")
+        elif label == "empty":
+            labels.append("neutral")
+        elif label == "enthusiasm":
+            labels.append("pos")
+        elif label == "fun":
+            labels.append("pos")
+        elif label == "happiness":
+            labels.append("pos")
+        elif label == "love":
+            labels.append("pos")
+        elif label == "relief":
+            labels.append("pos")
+        elif label == "surprise":
+            labels.append("neutral")
+        else:
+            print(label)
+            labels.append("neutral")
+    for label in labels:
+        if label == "neutral":
+            neutral.append(label)
+        elif label == "pos":
+            pos.append(label)
+        elif label == "neg":
+            neg.append(label)
+    print("label dist:")
+    print("pos= ",len(pos))
+    print("neg= ", len(neg))
+    print("neutral= ", len(neutral))
 
     """ Preprocessing (not yet implemented) """
 
@@ -148,10 +195,11 @@ if __name__ == "__main__":
     # Load a pretrained model
     model = BertForSequenceClassification.from_pretrained(
         pretrained, 
-        num_labels=13,
+        num_labels=3,
         # num_hidden_layers=args.num_hidden_layers,
         # num_attention_heads=args.num_attn_heads,
         output_attentions=True)
+    model = model.to(device)
 
     # Load model weights from a file
     # args.reload_model = "model.pt"
