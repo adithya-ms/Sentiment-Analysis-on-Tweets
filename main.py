@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from data_loading import load_data
-from baseline_models import splitData, kNN, SVM, print_confusion_matrix n
+from baseline_models import splitData, kNN, SVM, print_confusion_matrix 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, HashingVectorizer
 from sklearn.pipeline import Pipeline
 import preprocessing
@@ -11,7 +11,7 @@ import bert_model
 
 from gensim.models import Word2Vec
 
-def word2vecEmbedding(contents)
+def word2vecEmbedding(contents):
     contents_split = []
     for line in contents:
         contents_split.append(line.split())
