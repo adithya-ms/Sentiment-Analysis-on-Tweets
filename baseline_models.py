@@ -50,8 +50,8 @@ def SVM(inputs_train, labels_train, inputs_test, mode):
 """ Print a visualized confusion matrix"""
 def print_confusion_matrix(y_true, y_pred):
 
-   #class_names = ["neutral", "worry", "happiness", "sadness", "love", "surprise", "fun", "relief", "hate", "empty", "enthusiasm", "boredom", "anger"]
-   class_names = ["pos","neg", "neutral"]
+   class_names = ["neutral", "worry", "happiness", "sadness", "love", "surprise", "fun", "relief", "hate", "empty", "enthusiasm", "boredom", "anger"]
+   #class_names = ["pos","neg", "neutral"]
    fig, ax = plt.subplots(figsize=(15,15))
 
    cf_matrix = confusion_matrix(y_true, y_pred, labels = class_names)
