@@ -50,13 +50,16 @@ def SVM(inputs_train, labels_train, inputs_test, mode):
 """ Print a visualized confusion matrix"""
 def print_confusion_matrix(y_true, y_pred):
 
-   class_names = ["neutral", "worry", "happiness", "sadness", "love", "surprise", "fun", "relief", "hate", "empty", "enthusiasm", "boredom", "anger"]
-
+   #class_names = ["neutral", "worry", "happiness", "sadness", "love", "surprise", "fun", "relief", "hate", "empty", "enthusiasm", "boredom", "anger"]
+   class_names = ["pos","neg", "neutral"]
    fig, ax = plt.subplots(figsize=(15,15))
 
    cf_matrix = confusion_matrix(y_true, y_pred, labels = class_names)
+   #print(cf_matrix)
+
    sns.set(font_scale=1.4)
-   res = sns.heatmap(cf_matrix, annot=True, xticklabels = class_names, yticklabels = class_names, ax=ax, annot_kws={"size": 25})
+   res = sns.heatmap(cf_matrix, annot=True, xticklabels = class_names, yticklabels = class_names, ax=ax, annot_kws={"size": 22}, fmt='g')
    res.set_xticklabels(res.get_xmajorticklabels(), fontsize = 25, rotation=45)
-   res.set_yticklabels(res.get_ymajorticklabels(), fontsize = 25)
-   plt.title('Confusion matrix heatmap - true (vertical) vs. predicted (horizontal) labels', fontsize = 28)
+   res.set_yticklabels(res.get_ymajorticklabels(), fontsize = 25, rotation=0)
+   plt.title('Confusion matrix - true (vertical) vs. predicted (horizontal) labels', fontsize = 28)
+   plt.savefig('conf_mat.png')

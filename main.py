@@ -39,17 +39,12 @@ def word2vecEmbedding(contents):
     
     return embeddings_input
 
-
-def main():
-	
-	data = load_data("data/preprocessed_data.csv")
-	contents = data["content"]
-	labels = data["sentiment"]
-	labels_merged = []
-
+def changeLabelClasses(labels):
 	neutral = []
 	pos = []
 	neg = []
+	labels_merged = []
+
 	for label in labels:
 		if label == "anger":
 			labels_merged.append("neg")
@@ -88,6 +83,17 @@ def main():
 	print("pos= ", len(pos))
 	print("neg= ", len(neg))
 	print("neutral= ", len(neutral))
+	return labels_merged
+
+def main():
+	
+	data = load_data("data/preprocessed_data.csv")
+	contents = data["content"]
+	labels = data["sentiment"]
+	labels_merged = []
+
+	""" Change 13 -> 3 classes""" 
+	labels_merged = changeLabelClasses(labels)
     
 	""" Word2Vec embeddings (uncomment this and comment out the vectorizer to use it) """ 
 	#contents = word2vecEmbedding(contents)
