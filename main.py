@@ -41,7 +41,7 @@ def word2vecEmbedding(contents):
     
     return embeddings_input
 
-def wordpiece_tokens(contents, labels, feature_size = 40):
+def wordpiece_tokens(contents, labels, feature_size):
 
 	tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 	wp_input = np.zeros((contents.shape[0],feature_size))
@@ -105,26 +105,9 @@ def changeLabelClasses(labels):
 	print("neutral= ", len(neutral))
 	return labels_merged
 
-def main():
-    data = load_data("data/train.csv")
-    data = data.dropna(axis = 0)
-    data = data.drop(columns = 'Unnamed: 0', axis = 1)
-    contents = data["content"]
-    labels = data["sentiment"]
-    labels_merged = []
-    no_folds = 5
-    """ Change 13 -> 3 classes""" 
-    #labels_merged = changeLabelClasses(labels)
-    
-    """ Word2Vec embeddings (uncomment this and comment out the vectorizer to use it) """ 
-    #contents = word2vecEmbedding(contents)
-
-    """wordpiece embeddings (uncomment this and comment out the vectorizer to use it)"""
-    #contents, labels = wordpiece_tokens(contents,labels)
-    #sc = StandardScaler()
-    #contents = sc.fit_transform(contents)
-	
+def train(contents, labels, k, kernel):
     """ k-fold cross validation split on the train set"""
+    no_folds = 5
     kf = KFold(n_splits=no_folds)	
     count = 1
     total_acc_knn = []
@@ -139,16 +122,16 @@ def main():
         #inputs_train, inputs_test, labels_train, labels_test = splitData(contents, labels)
     
         """ Vectorization (first version) """ 
-        vectorizer = CountVectorizer(stop_words='english')
+        #vectorizer = CountVectorizer(stop_words='english')
         #vectorizer = TfidfVectorizer()
         #vectorizer = HashingVectorizer()
     
-        inputs_train = vectorizer.fit_transform(inputs_train)
-        inputs_test = vectorizer.transform(inputs_test)
+        #inputs_train = vectorizer.fit_transform(inputs_train)
+        #inputs_test = vectorizer.transform(inputs_test)
     
         """ Baseline implementation"""
-        predictionKNN = kNN(inputs_train, labels_train, inputs_test, 15)
-        predictionSVM = SVM(inputs_train, labels_train, inputs_test, 'linear')
+        #predictionKNN = kNN(inputs_train, labels_train, inputs_test, k)
+        predictionSVM = SVM(inputs_train, labels_train, inputs_test, kernel)
     
         """ Performance calculation"""
         labels_test = np.array(labels_test)
@@ -157,17 +140,17 @@ def main():
         total = 0
     
         for i in range(len(labels_test)):
-            if labels_test[i] == predictionKNN[i]:
-                correct_knn += 1
+            #if labels_test[i] == predictionKNN[i]:
+            #    correct_knn += 1
             if labels_test[i] == predictionSVM[i]:
                 correct_svm += 1
             total += 1
             
-        acc_knn = correct_knn / total
-        total_acc_knn.append(acc_knn)
+        #acc_knn = correct_knn / total
+        #total_acc_knn.append(acc_knn)
         acc_svm = correct_svm / total
         total_acc_svm.append(acc_svm)
-        print("accuracy KNN", acc_knn)
+        #print("accuracy KNN", acc_knn)
         print("accuracy SVM", acc_svm)
         
         #if acc > best_acc:
@@ -180,12 +163,41 @@ def main():
         #print_confusion_matrix(labels_test, predictionSVM)
     
     #bert_model.bert_ops(inputs_train, inputs_test, labels_train, labels_test, batch_size = 32, epochs = 5)
-    print("Mean accuracy KNN:", np.mean(total_acc_knn))
-    print("Standard deviation accuracy KNN:", statistics.stdev(total_acc_knn))
+    #print("Mean accuracy KNN:", np.mean(total_acc_knn))
+    #print("Standard deviation accuracy KNN:", statistics.stdev(total_acc_knn))
     print("Mean accuracy SVM:", np.mean(total_acc_svm))
     print("Standard deviation accuracy SVM:", statistics.stdev(total_acc_svm))
     # Print the confusion matrix of the best fold
-    #print_confusion_matrix(best_labels, best_prediction)
+    # print_confusion_matrix(best_labels, best_prediction)
+
+def main():
+    data = load_data("data/train.csv")
+    #data = data.dropna(axis = 0)
+    #data = data.drop(columns = 'Unnamed: 0', axis = 1)
+    contents = data["content"]
+    labels = data["sentiment"]
+    labels_merged = []
+
+    """ Change 13 -> 3 classes""" 
+    #labels_merged = changeLabelClasses(labels)
+    
+    """ Word2Vec embeddings (uncomment this and comment out the vectorizer to use it) """ 
+    #contents = word2vecEmbedding(contents)
+
+
+    """wordpiece embeddings (uncomment this and comment out the vectorizer to use it)"""
+    #for feature_size in (50,60,70):
+        # 40: 0.239 (sd 0.0054)
+    feature_size = 40
+    contents, labels = wordpiece_tokens(contents,labels,feature_size)
+    sc = StandardScaler()
+    contents = sc.fit_transform(contents)
+    #    train(contents, labels, 15, "rbf")
+	
+    for kernel in ("linear", "poly", "rbf"):
+        print("Kernel is ", kernel)
+        train(contents, labels, 15, kernel)
+        print('\n')
 
 if __name__ == "__main__":
 	main()
