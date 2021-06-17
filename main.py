@@ -120,9 +120,9 @@ def main():
     #contents = word2vecEmbedding(contents)
 
     """wordpiece embeddings (uncomment this and comment out the vectorizer to use it)"""
-    contents, labels = wordpiece_tokens(contents,labels)
-    sc = StandardScaler()
-    contents = sc.fit_transform(contents)
+    #contents, labels = wordpiece_tokens(contents,labels)
+    #sc = StandardScaler()
+    #contents = sc.fit_transform(contents)
 	
     """ k-fold cross validation split on the train set"""
     kf = KFold(n_splits=no_folds)	
