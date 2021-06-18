@@ -118,11 +118,11 @@ def train(contents, labels, k, kernel, vectorizer):
     total_acc_knn = []
     total_acc_svm = []
 
-    for train, test in kf.split(contents):
+    for train, val in kf.split(contents):
         print("Fold ", count)
         count += 1
 
-        inputs_train, inputs_test, labels_train, labels_test = contents[train], contents[test], labels[train], labels[test]
+        inputs_train, inputs_val, labels_train, labels_val = contents[train], contents[val], labels[train], labels[val]
     
         """ Vectorization """ 
         if vectorizer == "count":
@@ -131,22 +131,22 @@ def train(contents, labels, k, kernel, vectorizer):
             vectorizer = TfidfVectorizer()
     
         inputs_train = vectorizer.fit_transform(inputs_train)
-        inputs_test = vectorizer.transform(inputs_test)
+        inputs_val = vectorizer.transform(inputs_val)
     
         """ Baseline implementation"""
-        predictionKNN = kNN(inputs_train, labels_train, inputs_test, k)
-        predictionSVM = SVM(inputs_train, labels_train, inputs_test, kernel)
+        predictionKNN = kNN(inputs_train, labels_train, inputs_val, k)
+        predictionSVM = SVM(inputs_train, labels_train, inputs_val, kernel)
     
         """ Performance calculation"""
-        labels_test = np.array(labels_test)
+        labels_val = np.array(labels_val)
         correct_knn = 0
         correct_svm = 0
         total = 0
     
-        for i in range(len(labels_test)):
-            if labels_test[i] == predictionKNN[i]:
+        for i in range(len(labels_val)):
+            if labels_val[i] == predictionKNN[i]:
                 correct_knn += 1
-            if labels_test[i] == predictionSVM[i]:
+            if labels_val[i] == predictionSVM[i]:
                 correct_svm += 1
             total += 1
             
