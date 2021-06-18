@@ -55,7 +55,6 @@ def print_confusion_matrix(y_true, y_pred):
    fig, ax = plt.subplots(figsize=(15,15))
 
    cf_matrix = confusion_matrix(y_true, y_pred, labels = class_names)
-   #print(cf_matrix)
 
    sns.set(font_scale=1.4)
    res = sns.heatmap(cf_matrix, annot=True, xticklabels = class_names, yticklabels = class_names, ax=ax, annot_kws={"size": 22}, fmt='g')
