@@ -52,7 +52,7 @@ class Dataset(Dataset):
     def __len__(self):
         return len(self.input_ids)
 
-
+#Evaluating the model
 def evaluate(model, loader, le):
     model.eval()
     with torch.no_grad():
@@ -79,7 +79,7 @@ def evaluate(model, loader, le):
     model.train()
     return correct / total, y_true, y_pred
 
-
+#Training the model
 def train(model, train_loader, valid_loader, epochs, le):
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
     for epoch in range(epochs):
@@ -116,7 +116,7 @@ def train(model, train_loader, valid_loader, epochs, le):
     print_confusion_matrix(y_true, y_pred)
     print("Final Acc (valid): %.4f" % (acc))
 
-
+#Function that merges the labels into 3 classes (neg,pos,neutral)
 def label_merge(labels_raw):
     labels = []
     pos = []
@@ -172,7 +172,6 @@ if __name__ == "__main__":
     torch.manual_seed(0)
     np.random.seed(0)
     args = parser.parse_args()
-    args.save_model = "model.pt"
 
     pretrained = 'bert-base-cased'
     tokenizer = BertTokenizer.from_pretrained(pretrained)
@@ -213,4 +212,5 @@ if __name__ == "__main__":
         output_attentions=True)
     model = model.to(device)
 
+    #training model
     train(model, train_loader, valid_loader, args.epochs, le)
